@@ -5,6 +5,10 @@ import App from './App'
 import router from './router'
 import Vant from 'vant'
 import "vant/lib/index.css"
+import store from './store/index.js'
+import request from './axios.js'
+
+Vue.prototype.$http=request
 
 Vue.use(Vant);
 
@@ -14,6 +18,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

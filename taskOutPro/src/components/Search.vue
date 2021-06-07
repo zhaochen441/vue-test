@@ -1,0 +1,20 @@
+<template>
+    <div>
+        搜索
+        <van-search
+        v-model="value"
+        placeholder="请输入搜索关键词"
+        input-align="center"
+        />
+    </div>
+</template>
+<script>
+export default {
+    name:"search",
+    data(){
+        return{
+            value:null
+        }
+    }
+}
+</script>
