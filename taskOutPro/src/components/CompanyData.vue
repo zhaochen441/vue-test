@@ -1,0 +1,21 @@
+<template>
+    <div>
+        <van-nav-bar
+        title="商家详情"
+        left-text="返回"
+        left-arrow
+        @click-left="to"
+        />
+    </div>
+</template>
+<script>
+export default {
+    name:"companydata",
+    props:['id'],
+    methods:{
+        to(){
+            this.$router.go(-1)
+        }
+    }
+}
+</script>

@@ -5,6 +5,7 @@ import Login from '../components/Login.vue'
 import Search from '../components/Search.vue'
 import Mycount from '../components/Mycount.vue'
 import Orderform from '../components/Orderform.vue'
+import CompanyData from '../components/CompanyData.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -33,7 +34,13 @@ export default new Router({
       path:'/orderform',
       name:'orderform',
       component:Orderform
-    }
+    },
+   {
+     path:"/companydata/:id",
+     naem:"companydata",
+     component:CompanyData,
+     props:true
+   }
   ]
 })
 

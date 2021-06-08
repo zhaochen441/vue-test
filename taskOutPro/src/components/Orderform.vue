@@ -1,6 +1,6 @@
 <template>
     <div>
-    <h3>我的订单</h3>
+    <h3>订单列表</h3>
         <van-tabs v-model="active">
             <van-tab title="外卖订单">内容 1</van-tab>
             <van-tab title="待评价">内容 2</van-tab>
@@ -19,3 +19,8 @@ export default {
     }
 }
 </script>
+<style>
+    h3{
+        text-align: center;
+    }
+</style>
