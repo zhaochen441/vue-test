@@ -19,10 +19,11 @@
             </van-swipe>
             <!-- 显示所有商家 -->
             <div >
-                <van-icon name="wap-nav" />
+                <van-icon name="wap-nav"/>
                 <span>附近商家</span>
             </div>
-        <van-card v-for="item in context" :key="item.id"
+       <a :href="'/#/companydata/'+item.id" v-for="item in context" :key="item.id" @click="sjdata">
+        <van-card 
         num="2"
         :price="item.minPrice"
         :desc="item.notice"
@@ -34,6 +35,7 @@
             <van-tag plain type="danger">月销量：{{ item.sales }}</van-tag>
         </template>
         </van-card>
+       </a>
 
     <!-- <van-tabbar v-model="active" route>
     <van-tabbar-item icon="home-o" replace to="/">主页</van-tabbar-item>
@@ -45,6 +47,7 @@
 </template>
 <script>
 import { Card ,Tabbar, TabbarItem,Swipe, SwipeItem, Grid, GridItem ,NavBar } from 'vant';
+import { mapMutations } from 'vuex'
 export default {
     name:"home",
     data() {
@@ -57,22 +60,43 @@ export default {
       context:null,
     };
   },
+
+  computed:{
+
+  },
   components:{
+      
       Card ,Tabbar, TabbarItem,Swipe, SwipeItem, Grid, GridItem,NavBar 
   },
+  beforeRouteEnter(to,from,next){
+      next(function(vm){
+          
+          //获取下方全部商家
+      vm.$http.get("/biz/queryAllShopsInfo").then(function(res){
+          console.log(res.data)
+          vm.context=res.data
+      })
+      })
+  },
+   beforeRouteUpdate(to, from, next) {
+        var app= this
+         this.$http.get("/biz/queryAllShopsInfo").then(function(res){
+          console.log(res.data)
+          app.context=res.data
+      })
+      next()
+  },
   created(){
+      //获取顶部九宫格分类
       var app= this
       this.$http.post("/biz/queryBigCategory").then(function(res){
           console.log(res.data)
           app.toplists=res.data;
       })
-      this.$http.get("/biz/queryAllShopsInfo").then(function(res){
-          console.log(res.data)
-          app.context=res.data
-       
-      })
+      
   },
   methods:{
+      ...mapMutations(['mutationsshangjiadata']),
       onClickLeft:function(){
           console.log("ok")
       },
@@ -80,7 +104,9 @@ export default {
           console.log("ok1")
           this.$router.push("login")
       },
-      
+      sjdata(){
+          this.mutationsshangjiadata(this.context)
+      }
   }
 }
 </script>
