@@ -50,10 +50,38 @@
                     </van-sidebar>
                 </van-tab>
                 <van-tab title="评价">
-                    <div>
-                        <b>4.5</b>
-                        <p>综合评分</p>
+                    <div v-if="this.set==1">
+                        <div id="center" >
+                        <span style="font-size:22px; color:#F1A14D">{{datalist.score}}</span>
+                        <br>
+                        <span><b>综合评分</b></span>
+                        <br>
                         <span>高于周边商家99%</span>
+                    </div>
+                    <div id="xingji" >
+                        <van-rate readonly v-model="datalist.goodsScore"  size="15px"/><span> <span style="color:#F1A14D">{{ datalist.goodsScore}}</span>&nbsp;<b>商品评分</b></span><br>
+                        <van-rate readonly v-model="datalist.serviceScore"  size="15px"/><span> <span style="color:#F1A14D">{{ datalist.serviceScore }}</span>&nbsp;<b>服务评分</b></span><br>
+                        <span> <b>送达时间</b>&nbsp;&nbsp; {{datalist.deliveryTime}}分钟</span>
+                    </div>
+                    
+                    </div>
+
+                    <div id="left">
+                        <van-tabs type="card" color="#4AA478" background="" id="pingjia">
+                        <van-checkbox v-model="checked" class="fuxuan" icon-size="14px">只看有内容的评论</van-checkbox>
+                        <van-tab title="全部">
+                            <van-card v-for="item in comment" :key="item.id" id="comment"
+                            num="2"
+                            price="2.00"
+                            desc="描述信息"
+                            title="商品标题"
+                            thumb="https://img01.yzcdn.cn/vant/ipad.jpeg"
+                            />
+                        </van-tab>
+                        <van-tab title="满意">内容 2</van-tab>
+                        <van-tab title="不满意">内容 3</van-tab>
+                        </van-tabs>
+                        
                     </div>
                 </van-tab>
                 <van-tab title="商家">商家</van-tab>
@@ -94,7 +122,9 @@ export default {
             activeKey:0,
             alldata:"",
             shopfood:"",
-            set:0
+            set:0,
+            checked:false,
+            comment:""
         }
     },
 
@@ -102,8 +132,10 @@ export default {
         tabclick:function(name,val){
             this.set=name
             if(name==1){
+                var app=this
                 this.$http.get("/biz//queryCommentByShopId?shopId="+this.id).then(function(res){
                     console.log(res.data)
+                    app.comment=res.data
                 })
             }
         },
@@ -119,7 +151,10 @@ export default {
                 console.log(res.data)
                 that.shopfood=res.data
             })
-        }   
+        },
+        danxuan(val){
+            console.log(val)
+            }
     },
     beforeRouteEnter(to,from,next){
         next(function(vm){
@@ -202,5 +237,33 @@ export default {
  }
  #diancan{
      margin-top: 10px;
+ }
+ #center{
+
+     width: 47%;
+     float: left;
+     text-align: center;
+     font-size: 13px;
+ }
+ #xingji{
+     
+     /* width: 45; */
+     font-size: 14px;
+
+ }
+ #left{
+     margin-top: 20px;
+     width: 100%;
+ }
+ #pingjia{
+ 
+
+ }
+ .fuxuan{
+     margin-left: 20px;
+     font-size: 10px;
+ }
+ #comment{
+     width: 100%;
  }
 </style>
