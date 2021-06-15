@@ -65,44 +65,136 @@
                     </div>
                     
                     </div>
-
+                    <!-- 评价列表渲染 -->
                     <div id="left">
                         <van-tabs type="card" color="#4AA478" background="" id="pingjia">
                         <van-checkbox v-model="checked" class="fuxuan" icon-size="14px">只看有内容的评论</van-checkbox>
                         <van-tab title="全部">
                             <van-card v-for="item in comment" :key="item.id" id="comment"
-                            num="2"
-                            price="2.00"
-                            desc="描述信息"
-                            title="商品标题"
-                            thumb="https://img01.yzcdn.cn/vant/ipad.jpeg"
-                            />
+                            :title="item.account"
+                            thumb="https://img01.yzcdn.cn/vant/cat.jpeg"
+                            >
+                            <template #tags>
+                                <van-rate v-model="item.score" /><br>
+                                {{item.comments}}
+                            </template>
+                            <template #origin-price>
+                                <van-icon name="good-job" size="20px"/>
+                            </template>
+                            <template #footer>
+                                {{item.oederTime}}
+                            </template>
+                            </van-card>
+                            
                         </van-tab>
-                        <van-tab title="满意">内容 2</van-tab>
-                        <van-tab title="不满意">内容 3</van-tab>
+                        <van-tab title="满意">
+                            <div v-for="item in comment" :key="item.id">
+                                    <div v-if="item.isGood==1">
+                                        <van-card id="comment"
+                                        :title="item.account"
+                                        thumb="https://img01.yzcdn.cn/vant/cat.jpeg"
+                                        >
+                                        <template #tags>
+                                            <van-rate v-model="item.score" /><br>
+                                            {{item.comments}}
+                                        </template>
+                                        <template #origin-price>
+                                            <van-icon name="good-job" size="20px"/>
+                                        </template>
+                                        <template #footer>
+                                            {{item.oederTime}}
+                                        </template>
+                                        </van-card>
+                                    </div>
+                            </div>
+                        </van-tab>
+                        <van-tab title="不满意">
+                            <div v-for="item in comment" :key="item.id">
+                                <div v-if="item.isGood==0">
+                                     <van-card id="comment"
+                                        :title="item.account"
+                                        thumb="https://img01.yzcdn.cn/vant/cat.jpeg"
+                                        >
+                                        <template #tags>
+                                            <van-rate v-model="item.score" /><br>
+                                            {{item.comments}}
+                                        </template>
+                                        <template #origin-price>
+                                            <van-icon name="good-job" size="20px"/>
+                                        </template>
+                                        <template #footer>
+                                            {{item.oederTime}}
+                                        </template>
+                                        </van-card>
+                                </div>
+                            </div>
+                        </van-tab>
                         </van-tabs>
                         
                     </div>
                 </van-tab>
-                <van-tab title="商家">商家</van-tab>
+                <van-tab title="商家">
+                    <div>
+                        <h3>配送信息</h3>
+                        <van-tag color="#7232dd" size="large">联想外卖</van-tag>
+                        <span class="sj">有商家配送提供配送.约{{datalist.deliveryTime}}分钟送达.距离{{datalist.distance}}m</span><br>
+                        <span class="sj">配送费&nbsp;{{datalist.transportationPrice}}￥</span>
+                    </div>
+                    <van-divider/>
+                    <div>
+                        <h3>活动🐟服务</h3>
+                        <div v-for="item in tag" :key="item.id">
+                            <van-tag color="#7232dd" size="medium">{{item.tag}}</van-tag>
+                            <span>{{item.contents}}</span><br><br>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>商家实景</h3>
+                           <van-image class="img"
+                            width="100"
+                            height="100"
+                            src="https://img01.yzcdn.cn/vant/cat.jpeg"
+                            />
+                            <van-image class="img"
+                            width="100"
+                            height="100"
+                            src="https://img01.yzcdn.cn/vant/cat.jpeg"
+                            />
+                            <van-image class="img"
+                            width="100"
+                            height="100"
+                            src="https://img01.yzcdn.cn/vant/cat.jpeg"
+                            />
+                    </div>
+                </van-tab>
             </van-tabs>
             <!-- 商家食品渲染 -->
             <div v-if="this.set==0">
                 <div class="right" v-for="item in shopfood" :key="item.id">
                 <a href="#">
                      <van-card class="zsize"
-                    num="2"
                     price="2.00"
                     :desc="item.info"
                     :title="item.name"
                     :thumb="'http://47.95.13.193:80/takeOutSystem-1.0-SNAPSHOT/'+item.photo"
                     >
+                      <template #footer>
+                            <van-button size="mini" icon="minus" round @click.prevent="gouwu"></van-button>
+                            <van-button size="mini" icon="plus" round @click.prevent="che"></van-button>
+                      </template>
                     </van-card>
                 </a>      
              </div>
+             <van-goods-action>
+
+                <van-goods-action-icon icon="cart-o" text="购物车" :badge="data"/>
+                <van-goods-action-button
+                    type="danger"
+                    text="立即结算"
+                />
+                </van-goods-action>
             </div>
-            <!-- 评价列表渲染 -->
-             
+            
     </div>
 </template>
 <script>
@@ -117,6 +209,7 @@ export default {
             datalist:"",
             show:false,
             //商家分类信息
+            //优惠卷
             tag:"",
             active:"",
             activeKey:0,
@@ -124,11 +217,25 @@ export default {
             shopfood:"",
             set:0,
             checked:false,
-            comment:""
+            comment:"",
+            data:null
         }
     },
 
     methods:{
+        //添加购物车
+        gouwu(){
+                if(this.data==null||this.data==1){
+                    this.data=null
+
+                }else{
+                    this.data-- 
+                }
+            
+        },
+        che(){
+            this.data++
+        },
         tabclick:function(name,val){
             this.set=name
             if(name==1){
@@ -255,10 +362,6 @@ export default {
      margin-top: 20px;
      width: 100%;
  }
- #pingjia{
- 
-
- }
  .fuxuan{
      margin-left: 20px;
      font-size: 10px;
@@ -266,4 +369,13 @@ export default {
  #comment{
      width: 100%;
  }
+ .sj{
+margin-left: 10px;
+font-size: 13px;
+ }
+ .img{
+    margin-top: 10px;
+    margin-left: 30px;
+}
+
 </style>
